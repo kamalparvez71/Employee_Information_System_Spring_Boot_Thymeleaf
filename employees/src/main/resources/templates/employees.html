@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head lang="en">
+
+        <title>Employees System || Employees List</title>
+    <script>
+            $(document).ready(function () {
+                $('#emplist').DataTable({
+                    "processing": true, //show message 'processing...'
+                    "pagingType": "full_numbers", //pag. 'first','previous','next','last'                    
+                    "iDisplayLength": 10, //default value 10
+                    "autoWidth": true //default value 'true'
+                            //"order": [[ 2, "asc" ]] //order by second column ascending   
+
+                });
+            });
+        </script>
+        <!--/*/ <th:block th:include="fragments/header :: head"></th:block> /*/-->
+    </head>
+    <body style="background-color: lightcyan">
+        
+        <!--/*/ <th:block th:include="fragments/menu :: menu"></th:block> /*/-->
+        <div class="container">    
+            <div class="bgc">
+                <div th:if="${not #lists.isEmpty(allEmployees)}">
+                    <h2>Employees List</h2>
+                    <div style="text-align: right;"> 
+                        <form class="form-horizontal" method="get"> 
+                            <div class="form-group">
+                                <label class="col-sm-10">Gender:</label>
+                                <div class="col-sm-10">
+                                    <select th:field="${ep.gender}">                                        
+                                        <option value="F" th:value="F">Female</option>
+                                        <option value="M" th:value="M">Male</option>
+                                        <option value="A" th:value="A">All</option>
+                                    </select>
+                                </div>
+                                <input id="pdf" type="image" class="pdfexcelbutton"
+                                       formaction="/employees/pdf"
+                                       th:src="@{/images/pdf.png}" th:title="#{ExpPDF}"/>
+                                <input id="excel" type="image" class="pdfexcelbutton"
+                                       formaction="/employees/excel.xlsx"
+                                       th:src="@{/images/excel.png}" th:title="#{ExpExc}"/>
+                            </div>
+                        </form>
+                    </div>
+                    <!--if you use datatables-->
+                    <!--<table id="emplist" class="display" cellspacing="0" width="100%">-->
+                    <!--if you do not use datatables-->
+                    <table id="emplist" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Employee Id</th>
+                                <th>Birth Date</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Gender</th>
+                                <th>Hire Date</th>
+                                <th>Photo</th>
+                                <th>View</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tr th:each="employee : ${allEmployees}">
+                            <td th:text="${employee.empNo}">Employee Id</td>
+                            <td th:text="${employee.birthDate}">Birth Date</td>
+                            <td th:text="${employee.firstName}">First Name</td>
+                            <td th:text="${employee.lastName}">Last Name</td>
+                            <td th:text="${employee.gender}">Gender</td>
+                            <td th:text="${employee.hireDate}">Hire Date</td>
+                            <td><img class="thumbnail" th:text="*{employee.photo}" th:src="@{/image/${photo_id}}" width="50px" height="50px"/></td>
+                            <td><a th:href="${'/employees/' + employee.empNo}" th:title="#{ViewRow}"><button class="btn btn-primary">View</button></a></td>
+                            <td><a th:href="${'/employees/edit/' + employee.empNo}" th:title="#{EditRow}"><button class="btn btn-warning">Update</button></a></td>
+                            <td><a th:href="${'/employees/delete/' + employee.empNo}" th:title="#{DeleteRow}"><button class="btn btn-danger">Delete</button></a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="paginator">
+                    <div class="col-md-12 text-center">
+                        <div class='pagination pagination-centered'>
+                            <ul class="pagination">
+                                <li th:class="${pager.currentIndex == 0}? 'enabled' : ''"><span
+                                        th:if='${pager.currentIndex == 0}'>First</span> <a
+                                        th:if='${pager.currentIndex != 0}' th:href="@{/employees?page=0}"
+                                        title='Go to first page'>First</a>
+                                </li>
+                                <li th:class="${pager.currentIndex != 0}? '' : 'enabled'"><span
+                                        th:if='${pager.currentIndex == 0}'>«Previous</span> <a
+                                        th:if='${pager.currentIndex != 0}'
+                                        th:href="@{|${pager.baseUrl}${pager.currentIndex - 1}|}"
+                                        title='Go to previous page'>«Previous</a></li>
+
+                                <li th:class="${pager.currentIndex >= pager.totalPageCount}? 'enabled' : ''">
+                                    <span th:if='${pager.currentIndex == pager.totalPageCount}'>Next»</span> <a
+                                        th:if='${pager.currentIndex != pager.totalPageCount}'
+                                        th:href="@{|${pager.baseUrl}${pager.currentIndex + 1}|}"
+                                        title='Go to next page'>Next»</a>
+                                </li>
+                                <li th:class="${pager.currentIndex == pager.totalPageCount}? 'enabled' : ''">
+                                    <span th:if='${pager.currentIndex == pager.totalPageCount}'>Last</span>
+                                    <a th:if='${pager.currentIndex != pager.totalPageCount}'
+                                       th:href="@{|${pager.baseUrl}${pager.totalPageCount}|}"
+                                       title='Go to last page'>Last</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+        </div>
+
+    </body>
+</html>

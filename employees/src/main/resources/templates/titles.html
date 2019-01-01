@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head lang="en">
+
+        <title>Employees System || Employees Titles List</title>
+        
+        <!--/*/ <th:block th:include="fragments/header :: head"></th:block> /*/-->
+        
+    </head>
+    <body style=" background-color: lightsteelblue">
+        <!--/*/ <th:block th:include="fragments/menu :: menu"></th:block> /*/-->
+        <div class="container">    
+            <div class="bgc">
+                <div th:if="${not #lists.isEmpty(allTitles)}">
+                    <h2>Employees Titles List</h2>
+                                      <p style="text-align: right;">
+                        <a href="/titles/pdf" th:href="@{/titles/pdf}">
+                            <img src="" th:src="@{/images/pdf.png}" th:title="#{ExpPDF}" class="pdfexcelbutton"/>
+                        </a>
+                        <a href="/titles/excel" th:href="@{/titles/excel.xlsx}">
+                            <img src="" th:src="@{/images/excel.png}" th:title="#{ExpExc}" class="pdfexcelbutton"/>
+                        </a>
+                    </p>
+                    <!--if you do not use datatables-->
+                    <table id="emplist" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Employee Id</th>
+                                <th>Title</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th>View</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tr th:each="title : ${allTitles}">
+                            <td th:text="${title.titlesPK.empNo}">Employee Id</td>
+                            <td th:text="${title.titlesPK.title}">Title</td>
+                            <td th:text="${title.titlesPK.fromDate}">From Date</td>
+                            <td th:text="${title.toDate}">To Date</td>
+                            <td><a th:href="${'/titles/' + title.titlesPK}" th:title="#{ViewRow}"><button class="btn btn-primary">View</button></a></td>
+                            <td><a th:href="${'/titles/edit/' + title.titlesPK}" th:title="#{EditRow}"><button class="btn btn-warning">Update</button></a></td>
+                            <td><a th:href="${'/titles/delete/' + title.titlesPK}" th:title="#{DeleteRow}"><button class="btn btn-danger">Delete</button></a></td>
+                        </tr>
+                    </table>
+
+                    <div id="paginator">
+                        <div class="col-md-12 text-center">
+                            <div class='pagination pagination-centered'>
+                                <ul class="pagination">
+                                    <li th:class="${pager.currentIndex == 0}? 'disabled' : ''"><span
+                                            th:if='${pager.currentIndex == 0}'>First</span> <a
+                                            th:if='${pager.currentIndex != 0}' th:href="@{/titles?page=0}"
+                                            title='Go to first page'>First</a>
+                                    </li>
+                                    <li th:class="${pager.currentIndex != 0}? '' : 'disabled'"><span
+                                            th:if='${pager.currentIndex == 0}'>«Previous</span> <a
+                                            th:if='${pager.currentIndex != 0}'
+                                            th:href="@{|${pager.baseUrl}${pager.currentIndex - 1}|}"
+                                            title='Go to previous page'>«Previous</a></li>
+
+                                    <li th:class="${pager.currentIndex >= pager.totalPageCount}? 'disabled' : ''">
+                                        <span th:if='${pager.currentIndex == pager.totalPageCount}'>Next»</span> <a
+                                            th:if='${pager.currentIndex != pager.totalPageCount}'
+                                            th:href="@{|${pager.baseUrl}${pager.currentIndex + 1}|}"
+                                            title='Go to next page'>Next»</a>
+                                    </li>
+                                    <li th:class="${pager.currentIndex == pager.totalPageCount}? 'disabled' : ''">
+                                        <span th:if='${pager.currentIndex == pager.totalPageCount}'>Last</span>
+                                        <a th:if='${pager.currentIndex != pager.totalPageCount}'
+                                           th:href="@{|${pager.baseUrl}${pager.totalPageCount}|}"
+                                           title='Go to last page'>Last</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+        </div>
+
+    </body>
+</html>

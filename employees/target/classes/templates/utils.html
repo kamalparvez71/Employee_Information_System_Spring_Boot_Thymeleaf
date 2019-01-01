@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head lang="en">
+
+        <title>Employees System || Search Utilities</title>
+
+        <!--/*/ <th:block th:include="fragments/header :: head"></th:block> /*/-->
+        <style>
+            .fixed-height {
+                padding: 1px;
+                max-height: 200px;
+                overflow-y: auto;
+                overflow-x: hidden; 
+                background-color: #09F741;
+            }
+            .ui-autocomplete-loading {
+                background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                $('#deplist').DataTable({
+                    "processing": true, //show message 'processing...'
+                    "pagingType": "full_numbers", //pag. 'first','previous','next','last'                    
+                    "iDisplayLength": 10, //default value 10
+                    "autoWidth": true //default value 'true'
+                            //"order": [[ 2, "asc" ]] //order by second column ascending   
+
+                });
+            });
+        </script>
+    </head>
+    <body class="home">     
+        <!--/*/ <th:block th:include="fragments/menu :: menu"></th:block> /*/-->
+        <div class="container">  
+            <div class="bgc">
+                <h2>Search Utility</h2>
+                <div>
+                    <form class="form-horizontal" th:object="${employeePojo}" th:action="@{/utils}" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Employee LastName:</label>
+                            <div class="col-sm-8">
+                                <input type="text" autofocus="true" required="true"
+                                       id="auto" th:title="#{EmployeeIdAuto}"
+                                       placeholder="Type an employee lastName, if there are many choose one of them"
+                                       class="form-control" th:field="*{lastName}"/>
+                                
+                            </div>
+                            <div class="col-sm-2">
+                            <input type="submit" value="Search" th:value="Search"
+                                   class="btn btn-info" />
+                            <br/><br/>
+                        </div> 
+                            <br/><br/>
+                        </div>
+
+<!--                        <div class="row">
+                            <input type="submit" value="Search" th:value="Search"
+                                   class="btn btn-default" />
+                        </div> -->
+                    </form>
+                    <div th:if="${not #lists.isEmpty(search)}">
+                        <p style="text-align: center; color: #08088A; font-size: 16px;">Employees Information Resume</p>
+                        <table id="deplist" class="display" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Gender</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tr th:each="employee : ${search}">
+                                <td th:text="${employee.empNo}">Id</td>
+                                <td th:text="${employee.firstName}">First Name</td>
+                                <td th:text="${employee.lastName}">Last Name</td>
+                                <td th:text="${employee.gender}">Gender</td>
+                                <td><a th:href="${'/employees/edit/' + employee.empNo}" th:title="#{EditRow}">Edit</a></td>
+                            </tr>
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+        </div>
+
+        <script>
+            $("#auto").focus(function () {
+                $("#auto").autocomplete("option", "minLength", 3);
+                $("#auto").autocomplete("option", "delay", 500);
+            });
+            $(document).ready(function () {
+                $("#auto").autocomplete({
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    source: function (request, response) {
+                        $.getJSON("/utils/getEmployees/", {lastName: request.term}, function (result) {
+                            response($.map(result, function (employee) {
+                                return {
+                                    label: employee.lastName,
+                                    value: employee.lastName
+                                };
+
+                            }));
+                        });
+                    }
+                }).autocomplete("widget").addClass("fixed-height");
+
+            });
+        </script>
+    </body>
+</html>

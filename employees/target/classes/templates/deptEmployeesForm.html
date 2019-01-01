@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head lang="en">
+
+        <title>Employees System || Department Employees Form</title>
+
+        <style>
+            .fixed-height {
+                padding: 1px;
+                max-height: 200px;
+                overflow-y: auto;
+                overflow-x: hidden; 
+                background-color: #09F741;
+            }
+            .ui-autocomplete-loading {
+                background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+            }
+        </style>
+        <script>
+            $(function () {
+                $(document).tooltip();
+            });
+        </script>
+
+        <!--/*/ <th:block th:include="fragments/header :: head"></th:block> /*/-->
+    </head>
+    <body style="background-color: palegreen">
+        <!--/*/ <th:block th:include="fragments/menu :: menu"></th:block> /*/-->
+        <div class="container">            
+            <div class="bgc">
+                <h2>Department Employees Details</h2>
+                <div>
+                    <form class="form-horizontal" th:object="${deptEmp}" th:action="@{/deptemployees}" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Employee Id:</label>
+                            <div class="col-sm-10">
+                                <input id="auto" th:id="auto" autofocus="true"
+                                       th:title="#{EmployeeIdAuto}"
+                                       placeholder="Type an Employee Last Name" 
+                                       type="text" class="form-control" required="true"
+                                       th:field="*{deptEmpPK.empNo}"/>
+                                <p class="error" th:if="${#fields.hasErrors('deptEmpPK.empNo')}" th:errors="*{deptEmpPK.empNo}">empNo Error</p>
+                            </div>
+                        </div>
+
+                        <div th:if="${not #lists.isEmpty(allDepartments)}" class="form-group">
+                            <label class="col-sm-2 control-label">Departments:</label>
+                            <div class="col-sm-10">
+                                <select th:field="*{deptEmpPK.deptNo}">
+                                    <option th:each="department : ${allDepartments}"
+                                            th:text="${department.deptName}"
+                                            th:value="${department.deptNo}">departments</option>
+                                    <p class="error" th:if="${#fields.hasErrors('deptEmpPK.deptNo')}" th:errors="*{deptEmpPK.deptNo}">deptNo Error</p>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">From Date:</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="dpicker" maxlength="10"
+                                       th:title="#{DateTitles}" placeholder="yyyy/mm/dd"
+                                       class="form-control" th:field="*{fromDate}"/>
+                                <p class="error" th:if="${#fields.hasErrors('fromDate')}" th:errors="*{fromDate}">fromDate Error</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">To Date:</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="dpicker2" maxlength="10"
+                                       th:title="#{DateTitles}" placeholder="yyyy/mm/dd"
+                                       class="form-control" th:field="*{toDate}"/>
+                                <p class="error" th:if="${#fields.hasErrors('toDate')}" th:errors="*{toDate}">toDate Error</p>
+                            </div>
+                        </div>
+                      <div class="row" style="text-align: center">
+                            <input type="submit" value="Submit" th:value="Submit"
+                                   class="btn btn-success" />
+                            <input type="reset" value="Clear" th:value="Clear" 
+                                   class="btn btn-danger" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+        </div>
+
+        <script>
+            $("#auto").focus(function () {
+                $("#auto").autocomplete("option", "minLength", 3);
+                $("#auto").autocomplete("option", "delay", 500);
+            });
+            $(document).ready(function () {
+                $("#auto").autocomplete({
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    source: function (request, response) {
+                        $.getJSON("/deptemployees/getEmployees/", {lastName: request.term}, function (result) {
+                            response($.map(result, function (employee) {
+                                return {
+                                    label: employee.empNo + "(" + employee.firstName + ", " + employee.lastName + ")",
+                                    value: employee.empNo
+                                };
+
+                            }));
+                        });
+                    }
+                }).autocomplete("widget").addClass("fixed-height");
+
+            });
+        </script>
+
+        <script>
+            $(function () {
+                $('#dpicker,#dpicker2').datepicker({dateFormat: 'yy/mm/dd'});
+            });
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head lang="en">
+
+        <title>Employees System || Departments Form</title>
+
+        <!--/*/ <th:block th:include="fragments/header :: head"></th:block> /*/-->
+    </head>
+    <body style="background: #fffa90">
+        <!--/*/ <th:block th:include="fragments/menu :: menu"></th:block> /*/-->
+        <div class="container">            
+            <div class="bgc">
+                <h2>Departments Details</h2>
+                <div>
+                    <form class="form-horizontal" th:object="${department}" th:action="@{/departments}" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Department Id:</label>
+                            <div class="col-sm-10">
+                                <input type="text" autofocus="true"
+                                       class="form-control" th:field="*{deptNo}"/>
+                                <p class="error" th:if="${#fields.hasErrors('deptNo')}" th:errors="*{deptNo}">deptNo Error</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Department Name:</label>
+                            <div class="col-sm-10">
+                                <input type="text"
+                                       class="form-control" th:field="*{deptName}"/>
+                                <p class="error" th:if="${#fields.hasErrors('deptName')}" th:errors="*{deptName}">deptName Error</p>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align: center">
+                            <input type="submit" value="Submit" th:value="Submit"
+                                   class="btn btn-success" />
+                            <input type="reset" value="Clear" th:value="Clear" 
+                                   class="btn btn-danger" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+        </div>
+
+    </body>
+</html>

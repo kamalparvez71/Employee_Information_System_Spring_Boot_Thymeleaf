@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head lang="en">
+
+        <title>Employees System || Employees Departments Manager List</title>
+
+        <!--/*/ <th:block th:include="fragments/header :: head"></th:block> /*/-->
+
+        <script>
+            $(document).ready(function () {
+                $('#depmanlist').DataTable({
+                    "processing": true, //show message 'processing...'
+                    "pagingType": "full_numbers", //pag. 'first','previous','next','last'                    
+                    "iDisplayLength": 10, //default value 10
+                    "autoWidth": true //default value 'true'
+                            //"order": [[ 2, "asc" ]] //order by second column ascending   
+
+                });
+            });
+        </script>
+
+    </head>
+    <body style="background-color: mediumslateblue">
+        <!--/*/ <th:block th:include="fragments/menu :: menu"></th:block> /*/-->   
+        <div class="container">
+            <div class="bgc">
+                <div th:if="${not #lists.isEmpty(allDeptMan)}">
+                    <h2>Employees Departments Manager List</h2>
+                           <p style="text-align: right;">
+                        <a href="/deptmanagers/pdf" th:href="@{/deptmanagers/pdf}">
+                            <img src="" th:src="@{/images/pdf.png}" th:title="#{ExpPDF}" class="pdfexcelbutton"/>
+                        </a>
+                        <a href="/deptmanagers/excel" th:href="@{/deptmanagers/excel.xlsx}">
+                            <img src="" th:src="@{/images/excel.png}" th:title="#{ExpExc}" class="pdfexcelbutton"/>
+                        </a>
+                    </p>
+                    <table id="depmanlist" class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Employee Id</th>
+                                <th>Department Id</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th>View</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tr th:each="deptManager : ${allDeptMan}">
+                            <td th:text="${deptManager.deptManagerPK.empNo}">Employee Id</td>
+                            <td th:text="${deptManager.deptManagerPK.deptNo}">Department Id</td>
+                            <td th:text="${deptManager.fromDate}">From Date</td>
+                            <td th:text="${deptManager.toDate}">To Date</td>
+                            <td><a th:href="${'/deptmanagers/' + deptManager.deptManagerPK}" th:title="#{EditRow}"><button class="btn btn-primary">View</button></a></td>
+                            <td><a th:href="${'/deptmanagers/edit/' + deptManager.deptManagerPK}" th:title="#{EditRow}"><button class="btn btn-warning">Update</button></a></td>
+                            <td><a th:href="${'/deptmanagers/delete/' + deptManager.deptManagerPK}" th:title="#{EditRow}"><button class="btn btn-danger">Delete</button></a></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+        </div>
+
+    </body>
+</html>
